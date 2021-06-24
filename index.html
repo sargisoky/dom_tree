@@ -66,7 +66,6 @@
                 { type: "span", element: new SpanElement() },
             ];
             const tree = typedElements.find((elem) => elem.type === type).element;
-            debugger;
             tree.setAttributes(attributes);
             tree.setChildren(children);
             return tree;
