@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DOM TREE</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/javascript">
+
+        class DomElement {
+            constructor() {
+                const name = this.constructor.name;
+                const index = name.indexOf("Element");
+                this.name = name.slice(0, index).toLowerCase();
+                this.attributes;
+                this.children;
+            }
+
+            setAttributes(attributes) {
+                this.attributes = attributes;
+            }
+
+            setChildren(children) {
+                this.children = children;
+            }
+
+            childAppend(elem, child) {
+                if (child instanceof DomElement) {
+                    const childElem = child.draw();
+                    elem.append(childElem);
+                } else {
+                    elem.append(child);
+                }
+            }
+
+            draw() {
+                const elem = document.createElement(this.name);
+
+                for (let attr in this.attributes) {
+                    elem.setAttribute(attr, this.attributes[attr]);
+                }
+
+                if (Array.isArray(this.children)) {
+                    this.children.forEach((child) => {
+                        this.childAppend(elem, child);
+                    });
+                } else {
+                    this.childAppend(elem, this.children);
+                }
+
+                return elem;
+            }
+        }
+
+        class DivElement extends DomElement { }
+        class SpanElement extends DomElement { }
+
+        function el(type = "div", attributes = {}, children = []) {
+            type = type.toLowerCase();
+
+            const typedElements = [
+                { type: "div", element: new DivElement() },
+                { type: "span", element: new SpanElement() },
+            ];
+            const tree = typedElements.find((elem) => elem.type === type).element;
+            debugger;
+            tree.setAttributes(attributes);
+            tree.setChildren(children);
+            return tree;
+        }
+
+        const tree = el("div", { class: "div_classname", id: "div_id" }, [el("span", { class: "span_classname", id: "span_id" }, "hello"), el("span", {}, "world")]);
+        document.getElementById("root").appendChild(tree.draw());
+
+    </script>
+</body>
+
+</html>
